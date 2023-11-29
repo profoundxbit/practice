@@ -46,6 +46,12 @@ class TestSolution(unittest.TestCase):
         expected = [0, 1, 1, 2, 3, 5, 8, 13]
 
         self.assertEqual(actual, expected)
+    
+    def test_fib_memo_v3(self):
+        actual = fib_memo_v3(9)
+        expected = [0, 1, 1, 2, 3, 5, 8, 13, 21]
+
+        self.assertEqual(actual, expected)
 
 
 def fib_memo_v2(digits):
@@ -70,6 +76,21 @@ def fib_memo_v2(digits):
     result.append(1)
     __fib_memo(digits, {0: 0, 1: 1})
     return result
+
+def fib_memo_v3(digits):
+    result = [0, 1]
+
+    if digits <= 1:
+        return result[:digits]
+
+    fib_map = {0: 0, 1: 1}
+
+    for index in range(2, digits):
+        fib_map[index] = fib_map[index - 2] + fib_map[index - 1]
+        result.append(fib_map[index])
+
+    return result
+
 
 
 def fib_memo(digits):

@@ -43,7 +43,7 @@ class TestSolution(unittest.TestCase):
         nums = [1, 3]
         val = 3
         expected_nums = [1]
-        actual = remove_element(nums, val)
+        actual = remove_element_v2(nums, val)
 
         self.assertEqual(actual, len(expected_nums))
         index_to_sort = len(expected_nums)
@@ -52,6 +52,24 @@ class TestSolution(unittest.TestCase):
         for i, n in enumerate(expected_nums):
             self.assertEqual(nums[i], n)
             
+def remove_element_v2(nums, val):
+    idx = 0
+    end_idx = len(nums) - 1
+    found = 0
+    while idx <= end_idx:
+        if nums[idx] == val:
+            found += 1
+            if idx == end_idx:
+                break
+            swap_idx = idx
+            ## Found instance of val, search for element to swap
+            while swap_idx < end_idx and nums[swap_idx] == val:
+                swap_idx += 1
+            
+            nums[idx] = nums[swap_idx]
+            nums[swap_idx] = 0
+        idx += 1
+    return len(nums) - found
 
 def remove_element(nums, val):
     if len(nums) == 0:

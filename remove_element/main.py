@@ -10,14 +10,14 @@ URL: https://leetcode.com/problems/remove-element/?envType=study-plan-v2&envId=t
 Author: Dominique Reese
 """
 import unittest
-
+from typing import List
 
 class TestSolution(unittest.TestCase):
     def test_one(self):
-        nums = [3, 2, 1, 3]
+        nums = [3, 2, 2, 3]
         val = 3
-        expected_nums = [1, 2]
-        actual = remove_element(nums, val)
+        expected_nums = [2, 2]
+        actual = removeElement(nums, val)
 
         self.assertEqual(actual, len(expected_nums))
         index_to_sort = len(expected_nums)
@@ -25,12 +25,12 @@ class TestSolution(unittest.TestCase):
         nums[:index_to_sort] = sorted(nums[:index_to_sort])
         for i, n in enumerate(expected_nums):
             self.assertEqual(nums[i], n)
-    
+
     def test_two(self):
         nums = [3, 3]
         val = 3
         expected_nums = []
-        actual = remove_element(nums, val)
+        actual = removeElement(nums, val)
 
         self.assertEqual(actual, len(expected_nums))
         index_to_sort = len(expected_nums)
@@ -38,12 +38,12 @@ class TestSolution(unittest.TestCase):
         nums[:index_to_sort] = sorted(nums[:index_to_sort])
         for i, n in enumerate(expected_nums):
             self.assertEqual(nums[i], n)
-    
+
     def test_three(self):
         nums = [1, 3]
         val = 3
         expected_nums = [1]
-        actual = remove_element_v2(nums, val)
+        actual = removeElement(nums, val)
 
         self.assertEqual(actual, len(expected_nums))
         index_to_sort = len(expected_nums)
@@ -51,51 +51,25 @@ class TestSolution(unittest.TestCase):
         nums[:index_to_sort] = sorted(nums[:index_to_sort])
         for i, n in enumerate(expected_nums):
             self.assertEqual(nums[i], n)
-            
-def remove_element_v2(nums, val):
-    idx = 0
-    end_idx = len(nums) - 1
-    found = 0
-    while idx <= end_idx:
-        if nums[idx] == val:
-            found += 1
-            if idx == end_idx:
-                break
-            swap_idx = idx
-            ## Found instance of val, search for element to swap
-            while swap_idx < end_idx and nums[swap_idx] == val:
-                swap_idx += 1
-            
-            nums[idx] = nums[swap_idx]
-            nums[swap_idx] = 0
-        idx += 1
-    return len(nums) - found
 
-def remove_element(nums, val):
-    if len(nums) == 0:
-        return 0
-    
-    idx, removed = 0, 0
-    last_idx = len(nums) - 1
-    
-    while idx <= last_idx:
+
+def removeElement(nums: List[int], val: int) -> int:
+    count, idx, swap_idx = len(nums), 0, len(nums) - 1
+    while idx <= len(nums) - 1 and idx < swap_idx:
         if nums[idx] == val:
-            swap_idx = idx
             while nums[swap_idx] == val:
-                swap_idx += 1
-                if swap_idx > last_idx:
-                    if idx == 0:
-                        return 0 # All elements == val
-                    else:
-                        return len(nums) - removed
-            tmp = nums[idx]
+                count -= 1
+                swap_idx -= 1
+                if swap_idx < idx:
+                    return count
             nums[idx] = nums[swap_idx]
-            nums[swap_idx] = tmp
-            removed += 1
-
+            swap_idx -= 1
+            count -= 1
         idx += 1
-        
-    return len(nums) - removed
+    if len(nums) and nums[idx] == val:
+        count -= 1
+    return count
+
 
 if __name__ == "__main__":
     unittest.main()

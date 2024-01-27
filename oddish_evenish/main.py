@@ -28,8 +28,15 @@ class TestSolution(unittest.TestCase):
 
 
 def oddishOrEvenish(num):
+    
+    def get_digits(num):
+        while num:
+            digit = num % 10
+            yield digit
+            num //= 10
+            
     """Checks if a number is evenish (sum of digits is even) or oddish."""
-    return "Evenish" if sum(int(digit) for digit in str(num)) % 2 == 0 else "Oddish"
+    return "Evenish" if sum(int(digit) for digit in get_digits(num)) % 2 == 0 else "Oddish"
 
 
 if __name__ == "__main__":

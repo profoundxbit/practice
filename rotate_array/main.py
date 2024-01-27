@@ -36,6 +36,13 @@ class TestSolution(unittest.TestCase):
         rotate_array(nums, k)
         expected = [2, 3, 1]
         self.assertEqual(expected, nums)
+    
+    def test_five(self):
+        nums = [1, 2]
+        k = 3
+        rotate_array(nums, k)
+        expected = [2, 1]
+        self.assertEqual(expected, nums)
 
 
 def rotate_array(nums, k):
@@ -44,22 +51,19 @@ def rotate_array(nums, k):
     """
     if k % len(nums) == 0:
         return
-    idx = 0
-    for _ in range(len(nums) - 1):
-        swp_idx = (idx + k)
-        if swp_idx > len(nums) - 1:
-            swp_idx -= len(nums)
-
-        # Perform swap
-        tmp = nums[swp_idx]
-        nums[swp_idx] = nums[idx]
-        nums[idx] = tmp
-        # If we performed swap of final index we are DONE
-        if idx == len(nums) - 1:
-            break
-        else:  # We have more swaps to perform
-            idx = swp_idx + 1
-
+    nums_len = len(nums)
+    queue_len = k if k < nums_len else nums_len
+    nums_queue = [(i, nums[i]) for i in range(queue_len)]
+    while nums_queue:
+        curr = nums_queue.pop(0)
+        idx_to_replace = curr[0] + k
+        
+        if idx_to_replace >= nums_len:
+            idx_to_replace %= nums_len
+        else:
+            nums_queue.append((idx_to_replace, nums[idx_to_replace]))
+        
+        nums[idx_to_replace] = curr[1]
 
 if __name__ == "__main__":
     unittest.main()

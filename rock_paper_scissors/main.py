@@ -54,6 +54,16 @@ https://www.codingame.com/ide/puzzle/rock-paper-scissors-lizard-spock
 
 Author: Dominique Reese
 """
+
+GAME_MAP = {
+    'R': ['L', 'C'],
+    'P': ['R', 'S'],
+    'C': ['P', 'L'],
+    'L': ['S', 'P'],
+    'S': ['R', 'C']
+}
+
+
 def process_players(n):
     players = []
     for i in range(n):
@@ -68,11 +78,36 @@ def process_players(n):
         players.append(player)
     return players
 
+
+def play(match):
+    winner = None
+    player_one = match[0]
+    player_two = match[1]
+
+    player_one["matches"].append(player_two["number"])
+    player_two["matches"].append(player_one["number"])
+
+    if player_one["sign"] == player_two["sign"]:
+        winner = player_one if player_one["number"] < player_two["number"] else player_two
+    else:
+        player_one_sign_wins = player_two["sign"] in GAME_MAP[player_one["sign"]]
+        winner = player_one if player_one_sign_wins else player_two
+
+    return winner
+
+
 def main():
     n = int(input())
     players = process_players(n)
-    print(players)
-    
-    
+    while len(players) > 1:
+        matches = ((players[i], players[i+1])
+                   for i in range(0, len(players), 2))
+        winners = [play(match) for match in matches]
+        players = winners
+    winner = players[0]
+    print(winner["number"])
+    print(" ".join(map(str, winner["matches"])))
+
+
 if __name__ == "__main__":
     main()

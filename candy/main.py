@@ -1,5 +1,5 @@
 """
-There are n children standing in a line. Each child is assigned a rating value given in the integer array ratings.
+There are n children standing in a line. Each child is assigned a rating value given in the integer list ratings.
 
 You are giving candies to these children subjected to the following requirements:
 
@@ -51,34 +51,45 @@ class TestSolution(unittest.TestCase):
         expected = 7
         self.assertEqual(expected, actual)
 
+    def test_seven(self):
+        ratings = [1, 2, 87, 87, 87, 2, 1]
+        actual = candy(ratings)
+        expected = 13
+        self.assertEqual(expected, actual)
+
 
 def candy(ratings: List[int]) -> int:
-    # If ratings array contains less than 2 elements
-    # return the length of the array
-    if len(ratings) < 2:
-        return len(ratings)
+    """Algorithm is to initilize list (candy list) of same length as ratings list filled with 1's.
+    First iterate through ratings list ensuring elements which are greater have a higher
+    candy count than their left neighbor in the candy list. Then iterate again through 
+    ratings list, this time backwards ensuring elements which are greater have a higher
+    candy count than their right neighbor in the candy list. Return the sum of the candy
+    counts of the candy list
 
+    Args:
+        ratings (List[int]): Input ratings list
+
+    Returns:
+        int: Minumum number of candies needed to satisfy
+    """
+    
+    # Initilize candy list filled with 1's. Same length as ratings list
     candy_list = [1] * len(ratings)
-    idx = 0
-    runner_idx = 1
-    while runner_idx <= len(ratings) - 1:
-        if ratings[idx] < ratings[runner_idx]:
-            candy_list[runner_idx] = candy_list[idx] + 1
-            idx = runner_idx
-            runner_idx += 1
-        elif ratings[idx] == ratings[runner_idx]:
-            candy_list[runner_idx] = 1
-            idx = runner_idx
-            runner_idx += 1
-        else:
-            x = idx
-            while runner_idx <= len(ratings) - 1 and ratings[runner_idx] < ratings[x]:
-                for i in range(idx, runner_idx):
-                    candy_list[i] += 1
-                x = runner_idx
-                runner_idx += 1
-            idx = x
+    n = len(ratings)
 
+    # Iterate through ratings list handling increasing elements
+    for i in range(1, n):
+        # Increasing
+        if ratings[i] > ratings[i-1]:
+            candy_list[i] = candy_list[i-1] + 1
+
+    # Iterate through ratings list backwards handling decreasing elements
+    for i in reversed(range(1, n)):
+        # Decreasing
+        if ratings[i-1] > ratings[i] and candy_list[i-1] <= candy_list[i]:
+            candy_list[i-1] = candy_list[i] + 1
+
+    # Total up candy count to be returned
     total = sum(candy_list)
     return total
 

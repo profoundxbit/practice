@@ -21,21 +21,32 @@ class TestSolution(unittest.TestCase):
         
 class RandomizedSet:
     def __init__(self):
+        """We use list because list.append() takes O(1) average.
+        We use dict because get() and set() take O(1) average.
+        """
         self.inner = list()
+        self.map = dict()
 
     def insert(self, val: int) -> bool:
-        if val in self.inner:
-            return False
-        else:
+        if val not in self.map:
             self.inner.append(val)
+            last_idx = len(self.inner) - 1
+            self.map[val] = last_idx #Insert val in dict for O(1) retrieval
             return True
+        else:
+            return False
 
     def remove(self, val: int) -> bool:
-        if val not in self.inner:
-            return False
-        else:
-            self.inner.remove(val)
+        if val in self.map:
+            idx = self.map[val] # Get index of value
+            last_element = self.inner[-1] # Get last element in list
+            self.inner[idx] = last_element # Replace element to be removed with last element
+            self.map[last_element] = idx # Update map at last element key with new index
+            self.inner.pop() # Removing last element. No longer needed as it replaced val
+            self.map.pop(val) # Remove val from map
             return True
+        else:
+            return False
 
     def getRandom(self) -> int:
         return random.choice(self.inner)

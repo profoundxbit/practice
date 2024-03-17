@@ -12,13 +12,30 @@ from typing import List
 
 
 class TestSolution(unittest.TestCase):
+
     def test_one(self):
         nums = [-1, 0, 1, 2, -1, -4]
         expected = [[-1, -1, 2], [-1, 0, 1]]
 
         actual = threeSum(nums)
 
-        self.assertEqual(expected, actual)
+        self.assertTrue(_compare_triplet_lists(actual, expected))
+
+    def test_two(self):
+        nums = [0, 1, 1]
+        expected = []
+
+        actual = threeSum(nums)
+
+        self.assertTrue(_compare_triplet_lists(actual, expected))
+
+    def test_three(self):
+        nums = [0, 0, 0]
+        expected = [[0, 0, 0]]
+
+        actual = threeSum(nums)
+
+        self.assertTrue(_compare_triplet_lists(actual, expected))
 
 
 def threeSum(nums: List[int]) -> List[List[int]]:
@@ -36,25 +53,26 @@ def threeSum(nums: List[int]) -> List[List[int]]:
     # Iterate through nums searching map of pairs for a key which
     # when added to element == 0
     for idx, num in enumerate(nums):
-        if num == 0: # If element is 0 we are looking for a pair which sums to 0
+        if num == 0:  # If element is 0 we are looking for a pair which sums to 0
             if num in map:
-                finds = list(filter(lambda x: idx not in x, map[num])) # Filter pairs which include current element already
+                # Filter pairs which include current element already
+                finds = list(filter(lambda x: idx not in x, map[num]))
                 for x in finds:
-                    result.append([nums[x[0]], nums[x[1]], 0]) #Add valid pairs to result list
-        elif num < 0: # Element is negative number, therefore we're searching for positive equivalent in order to sum to 0
-            num = abs(num) # Turn positive
+                    # Add valid pairs to result list
+                    result.append([nums[x[0]], nums[x[1]], 0])
+        elif num < 0:  # Element is negative number, therefore we're searching for positive equivalent in order to sum to 0
+            num = abs(num)  # Turn positive
             if num in map:
                 finds = list(filter(lambda x: idx not in x, map[num]))
                 for x in finds:
                     result.append([nums[x[0]], nums[x[1]], -abs(num)])
-        else: # Element is positive number, therefore we're searching for negative equivalant in order to sum to 0
-            num = -abs(num) # Turn negative
+        else:  # Element is positive number, therefore we're searching for negative equivalant in order to sum to 0
+            num = -abs(num)  # Turn negative
             if num in map:
                 finds = list(filter(lambda x: idx not in x, map[num]))
                 for x in finds:
                     result.append([nums[x[0]], nums[x[1]], abs(num)])
 
-    
     unique_triplets = set()
     for x in result:
         x = sorted(x)
@@ -64,6 +82,25 @@ def threeSum(nums: List[int]) -> List[List[int]]:
 
     unique_triplets = [list(x) for x in unique_triplets]
     return unique_triplets
+
+def _compare_triplet_lists(list1, list2):
+    """
+    Compares two lists of integer triplets regardless of order within the lists or order of the lists themselves.
+    Args:
+        list1: The first list of integer triplets.
+        list2: The second list of integer triplets.
+    Returns:
+        True if the lists contain the same triplets regardless of order, False otherwise.
+    """
+    # Sort each triplet within both lists
+    list1 = sorted(sorted(triplet) for triplet in list1)
+    list2 = sorted(sorted(triplet) for triplet in list2)
+    # Convert the lists to sets of tuples
+    set1 = set(tuple(triplet) for triplet in list1)
+    set2 = set(tuple(triplet) for triplet in list2)
+    # Check if the sets are equal
+    return set1 == set2
+
 
 if __name__ == "__main__":
     unittest.main()
